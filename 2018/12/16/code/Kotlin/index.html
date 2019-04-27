@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="
+你一直说的那个公园已经拆了
+
+
+还记得荡着秋千日子就飞起来
+
+
+慢慢的下午阳光都在脸上撒野
+
+
+你那傻气 我真是想念
+
+"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">编译之后--Kotlin 协程</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">编译之后--Kotlin 协程</h1>
+        <div class="stuff">
+            <span>十二月 16, 2018</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Kotlin-协程"><a href="#Kotlin-协程" class="headerlink" title="Kotlin 协程"></a>Kotlin 协程</h1><p>本文只是浅析 Kotlin 协程在各平台的实现, 以及跨平台兼容方案。 如果要看Kotlin协程api的用法，请移步<a href="https://therollingstones.cn/2018/12/25/code/kotlin/KotlinCoroutine/" target="_blank" rel="noopener">我的另一篇文章</a></p>
+<p>言归正传, 我们聊聊”协程”.</p>
+<p><strong><em>如果有讲的不好的地方， 欢迎在下方评论</em></strong></p>
+<h2 id="协程介绍"><a href="#协程介绍" class="headerlink" title="协程介绍"></a>协程介绍</h2><p>首先， 什么是协程？</p>
+<blockquote>
+<p>有人说协程拥有自己的寄存器上下文和栈的轻量级执行单元， 可以在控制执行上下文的切换。</p>
+</blockquote>
+<blockquote>
+<p>熟悉Javascript生成器的人可能会说，协程就是回调的语法糖，本质根本不关方法栈上下文切换啥事。</p>
+</blockquote>
+<p>到底谁说的是对的？<br>别着急， 看看维基百科是怎么说的：</p>
+<p>我们先看看下面这段描述:</p>
+<blockquote>
+<p>Coroutines are computer-program components that generalize subroutines for non-preemptive multitasking, by allowing multiple entry points for suspending and resuming execution at certain locations</p>
+</blockquote>
+<p>协程就是可以生成非抢占式子程序的计算机程序， 可以允许程序有多个特定的地方可以挂起或者恢复执行。</p>
+<h2 id="Kotlin-协程在各平台编译成什么？"><a href="#Kotlin-协程在各平台编译成什么？" class="headerlink" title="Kotlin 协程在各平台编译成什么？"></a>Kotlin 协程在各平台编译成什么？</h2><blockquote>
+<p>熟悉Javascript生成器的人可能会说， 协程就是回调的语法糖， 本质根本不关方法栈上下文切换啥事。</p>
+</blockquote>
+<p>在Kotlin 协程之前， 我们讲讲关于Js的故事。</p>
+<blockquote>
+<p>大家都知道Js有诸多版本， 我们经常用着Es6、7、8的语法, 使用Babel将它们编译成低版本， 再在浏览器或者低版本node执行。 这里我们单纯对Node.js进行讨论。</p>
+</blockquote>
+<blockquote>
+<p>低版本的Node有协程吗？ 你可以说没有。实现 coroutine 的方式有很多，比如 ES6 的 generator，ES8(<code>你没有看错, 不是ES7</code>) 的 async/await。在低版本的Node中， 自然是没有协程的， 高级的生成器函数将会编译成普通的Js回调、状态机代码(<code>我们后面会讲到</code>)， 但是在Node.js 8之后的版本， node.js原生支持了协程， 实现了寄存器上下文和栈的切换。</p>
+</blockquote>
+<blockquote>
+<p>所以， 我们是不是可以说一段高版本Js代码如果经过编译成低版本代码后， 就不在拥有协程了呢？<br>这么说是不公平的, 如果这么说的话， 那本文就该换标题了， Kotlin就没有协程了</p>
+<blockquote>
+<p><code>上层不应该关心下层的具体实现，而只应该关心下层提供的接口</code></p>
+</blockquote>
+</blockquote>
+<p>大家都知道， Jvm也是没有原生协程的，大部分平台， 包括Kotlin-js编译后的es5 js代码， 也并没有关于协程的原生实现, (或者说没有用到)。 那么把协程看做重要特性的Kotlin， 编译后是怎么样的呢？<br><code>Talk is cheap, show me your code.</code></p>
+<blockquote>
+<p>让我们看看下面这段(js 和 kotlin 混写的)伪代码</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">suspend <span class="function"><span class="keyword">function</span> <span class="title">postItems</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> tk = getToken(item)</span><br><span class="line">    <span class="keyword">let</span> post = doPost(tk)</span><br><span class="line">    <span class="keyword">return</span> post</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface StateMachine &#123;</span><br><span class="line">    status: number,</span><br><span class="line">    item: Any,</span><br><span class="line">    continuation: Continuation</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">postI</span>(<span class="params">item, sm: Continuation</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!sm <span class="keyword">instanceof</span> StateMachine) &#123;</span><br><span class="line">        sm = &#123;</span><br><span class="line">            status: <span class="number">0</span>,</span><br><span class="line">            item: <span class="literal">null</span>,</span><br><span class="line">            continuation: sm</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> sm.status:</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            sm.status += <span class="number">1</span>;</span><br><span class="line">            getToken(item, (tk) =&gt; &#123;</span><br><span class="line">                sm.item = tk;</span><br><span class="line">                postI(<span class="literal">null</span>, sm)</span><br><span class="line">            &#125;)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            sm.status += <span class="number">1</span>;</span><br><span class="line">            doPost(sm.item, (post) =&gt; &#123;</span><br><span class="line">                sm.item = post;</span><br><span class="line">                postI(<span class="literal">null</span>, sm)</span><br><span class="line">            &#125;)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            sm.continuation.resume(sm.item)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>简析：</strong></p>
+<blockquote>
+<p>postItems 是一个kotlin的suspend方法， 他先通过http请求拿到token， 再通过token发起一个http post 请求， 将返回的对象 返回给调用者。 </p>
+</blockquote>
+<blockquote>
+<p>对应编译后的实现就成了postI,一个普通的方法,接受一个Continuation类型对象的方法。而这个 Continuation,可以近似看做一个回调函数, 也就是说, 在jvm这边, 你的suspend function, 最终变成了接受一个回调函数为参数的普通方法, 而且在其它平台也大抵类似。</p>
+</blockquote>
+<blockquote>
+<p>那么suspend function里面的suspend function调用是怎么调的呢？看上面的伪代码，你大概可以知道： 通过回调, 在getToken的回调里面继续调用postItems方法，但是状态已经改变，则可以执行到下一个suspend挂起点，以此类推,通过这个状态机实现了原来kotlin suspend 方法的<code>挂起与恢复</code>。</p>
+</blockquote>
+<h2 id="Kotlin-跨平台实现"><a href="#Kotlin-跨平台实现" class="headerlink" title="Kotlin 跨平台实现"></a>Kotlin 跨平台实现</h2><p>虽然Kotlin 编译后的普通方法提供了回调的应用， 但是正如官方文档中所说， 你永远不要尝试在各个平台实现这些回调， 除非你是个 <code>&quot;coroutine master&quot;</code>, 实现context等都是有坑的。</p>
+<h3 id="Kotlin-协程-node-js"><a href="#Kotlin-协程-node-js" class="headerlink" title="Kotlin 协程 node.js"></a>Kotlin 协程 node.js</h3><p>kotlin.coroutines 有个专门的 promise 库， 所以如果你要暴露一个api给外面的js库去调用， 你可以这么写：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">helloWorld</span><span class="params">()</span></span> &#123;</span><br><span class="line">  delay(<span class="number">1000</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"1212"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">theApiYouWantToExposeAndUsedInOtherJsModules</span><span class="params">()</span></span> &#123;</span><br><span class="line">  Globalscope.promise &#123;</span><br><span class="line">    helloworld()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Kotlin-协程-jvm"><a href="#Kotlin-协程-jvm" class="headerlink" title="Kotlin 协程 jvm"></a>Kotlin 协程 jvm</h3><p>Jvm 有runblocking 的api阻塞当前线程执行， 这个是一个优点，因为在node.js单线程里面你没办法runblocking.<br> 所以你可以暴露这样的api:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">helloWorld</span><span class="params">()</span></span> &#123;</span><br><span class="line">  delay(<span class="number">1000</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"1212"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">theApiYouWantToExposeAndUsedInOtherJvmProgram</span><span class="params">()</span></span> = runBlocking &#123;</span><br><span class="line">    helloworld()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然为了性能更推荐的方式是利用jvm 独有future api 返回一个Future 对象:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">theApiYouWantToExposeAndUsedInOtherJvmProgram</span><span class="params">()</span></span> = future &#123;</span><br><span class="line">    helloworld()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Kotlin-协程-native"><a href="#Kotlin-协程-native" class="headerlink" title="Kotlin 协程 native"></a>Kotlin 协程 native</h3><p>native 也有runblocking, 不过好像在swift 里面有个天坑。我对swift不是很了解， 解决方案给你扔这了： <a href="https://github.com/ktorio/ktor/issues/678" target="_blank" rel="noopener">https://github.com/ktorio/ktor/issues/678</a></p>
+<blockquote>
+<p>如果有问题或者谬误， 欢迎在评论指出。</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kotlin-协程"><span class="toc-number">1.</span> <span class="toc-text">Kotlin 协程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#协程介绍"><span class="toc-number">1.1.</span> <span class="toc-text">协程介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kotlin-协程在各平台编译成什么？"><span class="toc-number">1.2.</span> <span class="toc-text">Kotlin 协程在各平台编译成什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kotlin-跨平台实现"><span class="toc-number">1.3.</span> <span class="toc-text">Kotlin 跨平台实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kotlin-协程-node-js"><span class="toc-number">1.3.1.</span> <span class="toc-text">Kotlin 协程 node.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kotlin-协程-jvm"><span class="toc-number">1.3.2.</span> <span class="toc-text">Kotlin 协程 jvm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kotlin-协程-native"><span class="toc-number">1.3.3.</span> <span class="toc-text">Kotlin 协程 native</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

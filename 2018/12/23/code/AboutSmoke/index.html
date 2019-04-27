@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="
+你一直说的那个公园已经拆了
+
+
+还记得荡着秋千日子就飞起来
+
+
+慢慢的下午阳光都在脸上撒野
+
+
+你那傻气 我真是想念
+
+"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">About Smoke: 防御性编程与契约式编程</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">About Smoke: 防御性编程与契约式编程</h1>
+        <div class="stuff">
+            <span>十二月 23, 2018</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Smoke-与契约式、防御性编程"><a href="#Smoke-与契约式、防御性编程" class="headerlink" title="Smoke 与契约式、防御性编程"></a>Smoke 与契约式、防御性编程</h1><p>Smoke 是我写的一个给Dto做Validation 的小工具。 起因很简单,之前我在写Http client的时候, 觉得在很多地方都要对同一个对象进行验证比较麻烦(防御性编程)。 有个注解形式声明, 在最初的地方对对象进行一次验证, 就可以在编码时假设数据是OK的了。注解形式的validation是声明式的, 减少了程序员对数据是否符合规范的恐惧。</p>
+<blockquote>
+<p>想想, 如果这个东西是命令式的, 即你在第一次拿到这个对象的时候, 对它进行了基本的验证, 但是到后面的dal 层, service 层, 往往你还会对这个数据进行再一次的重复的验证, 才去执行自己的业务逻辑。</p>
+</blockquote>
+<p>防御性编程给我们带来的好处是系统的错误尽早发现处理, 而不是在很后面抛出一个NPE, 到时候造成的损失可能是难以估量的。 而这又带来一个重复代码的问题, 代码到处验证, 十分臃肿。</p>
+<p>所以很多人采用约定式的编程, 即我假设你传过来的数据是符合我的规范的, 出事怪你。 我个人觉得这个简直太可怕了, 就算自己写的代码, 我自己也难以信任, 更何况是别人的？ 所以, 有个这么一个annotation声明在类上面, 就像是一个契约文档。 我去调用类的方法, 可以大概知道哪些field是安全的。 这个是对契约性编程的一种补充。</p>
+<p>当然, 这远远不能达到 <code>保证数据一定是安全的</code> 需求。 那我们如何做呢？</p>
+<ul>
+<li>保证Dto(或者bean)是immutable 的</li>
+<li>在每一次对类修改, 都进行验证</li>
+</ul>
+<p>以上两个条件满足其一即可。</p>
+<p>当然上面都是我个人的一些看法, 看了一些防御性编程与进攻性编程, 觉得他们有部分都没有讲清楚(或者是小弟愚昧看不明白),所以我强行理解了一波, 给出的感触可能是这样的。 </p>
+<h1 id="写Smoke的感触"><a href="#写Smoke的感触" class="headerlink" title="写Smoke的感触"></a>写Smoke的感触</h1><p>Smoke 不是一个玩具。 它是我利用业余时间写的, 并在我日常工作上已经有应用的小工具(或者说框架)。</p>
+<p>当初因为validation重复代码太多的问题, 上网找了一些解决方案, 比如<a href="https://github.com/hibernate/hibernate-validator" target="_blank" rel="noopener">hibernate的validator</a>, 还有命令式的, 最终决定针对自己需求写一个。</p>
+<p>刚开始信心满满,发布到jcenter, 自己想了好几个feature, 虽然用不到也实现了, 然后后面发现实在无人问津,就没再管了。 留了个VRule没有实现, 差不多一个月过去了, 今天还是决定把它弄完, 虽然没有星星, 做事还是要有始有终。 (<code>谁叫我feature没做好先把readme写好了。。承诺过的feature, 浪费周末也要搞完。</code>)</p>
+<p>当然除了在我自己的工作中用到之外也不是全无收获, 搞了个travis自动test、publish到jcenter, 还踩了一对java库发布的坑(fucking java)。之前欠了好多技术债,一个一个慢慢还。</p>
+<p>下面是Smoke的文档~</p>
+<h1 id="Smoke"><a href="#Smoke" class="headerlink" title="Smoke "></a>Smoke <a href="https://travis-ci.org/EltonZhong/smoke" target="_blank" rel="noopener"><img src="https://travis-ci.org/EltonZhong/smoke.svg?branch=master" alt="Build Status"></a></h1><p>A declarative validator framework for dtos, beans, or just objects.</p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install   "></a>Install <a href="https://bintray.com/ez/tools/smoke/_latestVersion" target="_blank" rel="noopener"> <img src="https://api.bintray.com/packages/ez/tools/smoke/images/download.svg" alt="Download"> </a></h2><p>Get the latest version at <a href="https://bintray.com/ez/tools/smoke/_latestVersion" target="_blank" rel="noopener">Jcenter</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// For gradle</span><br><span class="line">repositories &#123;</span><br><span class="line">    jcenter()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile &apos;com.ez.tools:smoke:5.0.0&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Basic-Usage"><a href="#Basic-Usage" class="headerlink" title="Basic Usage"></a>Basic Usage</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserDto</span> </span>&#123;</span><br><span class="line">    <span class="meta">@VString</span>(shouldBe = &#123;<span class="string">"John1"</span>, <span class="string">"John2"</span>&#125;)</span><br><span class="line">    <span class="meta">@VNotNull</span></span><br><span class="line">    String name = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Will throw java.lang.IllegalStateException when field name is null</span></span><br><span class="line">com.ez.tools.validator.Smoke.validate(<span class="keyword">new</span> UserDto())</span><br></pre></td></tr></table></figure>
+<p>Go to package <code>com.ez.tools.validator.annotations</code> to find other features.</p>
+<h2 id="Advance-features"><a href="#Advance-features" class="headerlink" title="Advance features"></a>Advance features</h2><p>Smoke 5.0 focused on the following topics:</p>
+<ul>
+<li>Field validation, with built-in constraints: @VString, @VInt, @VNotNull.</li>
+<li><code>Getter method</code> validation, contraints can be put on method with no arguments, when validating, the getter method will be called, and the value returned will be validated.</li>
+<li>@VRule on class level, validate this kind of object using additional rule.</li>
+</ul>
+<h3 id="VString"><a href="#VString" class="headerlink" title="VString"></a>VString</h3><p>The regex feature has been released! Use regex:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserDto</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@VString</span>(shouldMatch = &#123;Regexps.EMAIL&#125;)</span><br><span class="line">    String email;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Custom regex: Name should match all values in should match</span></span><br><span class="line">    <span class="comment">// And name should not match any values in should not match</span></span><br><span class="line">    <span class="meta">@VString</span>(shouldMatch = &#123;<span class="string">".+"</span>, <span class="string">"..."</span>&#125;)</span><br><span class="line">    <span class="meta">@VString</span>(shouldNotMatch = &#123;<span class="string">"..."</span>&#125;)</span><br><span class="line">    String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@VString</span>(...)</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> get***() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="VRule"><a href="#VRule" class="headerlink" title="VRule"></a>VRule</h3><p>Use additional rules to validate your dto.</p>
+<p>Add additional rule:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.ez.tools.validator.Smoke.validate(<span class="keyword">new</span> UserDto(), IRule...rules)</span><br></pre></td></tr></table></figure></p>
+<p>or:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Add your rule class</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="meta">@VRule</span>(com.ez.tools.validator.core.rules.AllFieldsShouldNotBeNull.class)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserDto</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Will validate using the rule specified in VRule value.</span></span><br><span class="line">com.ez.tools.validator.Smoke.validate(<span class="keyword">new</span> UserDto())</span><br></pre></td></tr></table></figure></p>
+<p>Also you can write Additional rules:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">YourRule</span> <span class="keyword">implements</span> <span class="title">IRule</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">validate</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!o <span class="keyword">instanceof</span> UserDto) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">        &#125;</span><br><span class="line">        UserDto dto = (UserDto) o;</span><br><span class="line">        <span class="keyword">if</span>(dto.name == <span class="string">"elton"</span> &amp;&amp; dto.age &gt; <span class="number">100</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"Elton is dead after at 99 years old."</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Use it in your common interface:</span></span><br><span class="line"><span class="meta">@VRule</span>(YourRule.class)</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">SatisfyYourRule</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Implements the interface:</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">YourDto</span> <span class="keyword">implements</span> <span class="title">SatisfyYourRule</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// When validate your dto, the rule will be invoked. And as rule above, Exception("Elton is dead after at 99 years old.") will be thrown</span></span><br><span class="line">Smoke.validate(<span class="keyword">new</span> UserDto(<span class="string">"elton"</span>, <span class="number">100</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="VRecursive"><a href="#VRecursive" class="headerlink" title="VRecursive"></a>VRecursive</h3><p>Wanna validate details of a field with smoke? Try VRecursive:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserDto</span> </span>&#123;</span><br><span class="line">    <span class="meta">@VRecursive</span></span><br><span class="line">    AddressDto address = <span class="keyword">new</span> AddressDto(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@VRule</span>(AllFieldsShouldNotBeNull.class)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddressDto</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AddressDto</span><span class="params">(UserDto dto)</span> </span>&#123;</span><br><span class="line">        user = dto;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String a = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@VString</span>(shouldMatch = &#123;Regexps.EMAIL&#125;)</span><br><span class="line">    <span class="function">String <span class="title">getEmail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"123@qq.com"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@VRecursive</span></span><br><span class="line">    UserDto user = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Will validate userDto's address, with respect to rules and other annotation con</span></span><br><span class="line"><span class="comment">// And don't worry that it might cause stackoverflow exception:</span></span><br><span class="line"><span class="comment">// smoke will not validate same object twice.</span></span><br><span class="line">com.ez.tools.validator.Smoke.validate(<span class="keyword">new</span> UserDto())</span><br></pre></td></tr></table></figure></p>
+<p><strong><em><code>Remeber! When field is null, smoke will ignore this field&#39;s validation.</code></em></strong></p>
+<p><strong><em><code>You can use VNotNull to handle this situation</code></em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserDto</span> </span>&#123;</span><br><span class="line">    <span class="meta">@VString</span>(shouldMatch = <span class="string">"^elton.+"</span>)</span><br><span class="line">    String name = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Will not validate when name is null. If you want to, add @VNotNull annotation constraints.</span></span><br><span class="line">com.ez.tools.validator.Smoke.validate(<span class="keyword">new</span> UserDto())</span><br></pre></td></tr></table></figure></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Smoke-与契约式、防御性编程"><span class="toc-number">1.</span> <span class="toc-text">Smoke 与契约式、防御性编程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#写Smoke的感触"><span class="toc-number">2.</span> <span class="toc-text">写Smoke的感触</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Smoke"><span class="toc-number">3.</span> <span class="toc-text">Smoke </span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Install"><span class="toc-number">3.1.</span> <span class="toc-text">Install   </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-Usage"><span class="toc-number">3.2.</span> <span class="toc-text">Basic Usage</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Advance-features"><span class="toc-number">3.3.</span> <span class="toc-text">Advance features</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VString"><span class="toc-number">3.3.1.</span> <span class="toc-text">VString</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRule"><span class="toc-number">3.3.2.</span> <span class="toc-text">VRule</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRecursive"><span class="toc-number">3.3.3.</span> <span class="toc-text">VRecursive</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="
+你一直说的那个公园已经拆了
+
+
+还记得荡着秋千日子就飞起来
+
+
+慢慢的下午阳光都在脸上撒野
+
+
+你那傻气 我真是想念
+
+"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Kotlin-multiplatform setup.</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">Kotlin-multiplatform setup.</h1>
+        <div class="stuff">
+            <span>十二月 18, 2018</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Kotlin-multiplatform"><a href="#Kotlin-multiplatform" class="headerlink" title="Kotlin multiplatform"></a>Kotlin multiplatform</h1><p>Kotlin multiplatform<code>(Below we call it kotlinmp for short)</code> is a feature released in Kotlin1.2. Kotlinmp makes you able to <code>write once, compile everywhere</code>:</p>
+<blockquote>
+<p>You can write same kotlin code and use it in Jvm(of course), Javascript(<code>Both browser and node.js</code>), Native project(<code>Android, iOS, linux...etc</code>)</p>
+</blockquote>
+<h2 id="Quick-start"><a href="#Quick-start" class="headerlink" title="Quick start"></a>Quick start</h2><p>Setting up is not difficult. Follow the link below and you can easily start your own mp project.<br><a href="https://www.kotlincn.net/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project" target="_blank" rel="noopener">Start Kotlin multiplatform with gradle</a></p>
+<p>Or if you want to get a really quick start for node.js/Jvm project, below are what you’ll get.</p>
+<p>run shell script below to quick setup:<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Get startkit project</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/EltonZhong/kotlin-node-jvm-startkit.git</span><br><span class="line"><span class="comment"># Generate .js files and .class files</span></span><br><span class="line"><span class="built_in">cd</span> kotlin-node-jvm-startkit &amp;&amp; gradle build &amp;&amp; gradle node</span><br><span class="line"><span class="comment"># Run your program(if you got a main function in it).</span></span><br><span class="line"><span class="built_in">cd</span> node &amp;&amp; npm start</span><br></pre></td></tr></table></figure></p>
+<h2 id="Detail-Configurations"><a href="#Detail-Configurations" class="headerlink" title="Detail Configurations"></a>Detail Configurations</h2><p>You might find that official documents don’t give you an example to config to produce a runnable js program. Yes, it’s reasonable. You can choose to compile js to commonjs used in node, or plainjs used in the browser.<br>run <code>kotlinc-js -h</code> to get detail.</p>
+<p>So when we are using node.js, we should config like below:</p>
+<h3 id="gradle-preset-config"><a href="#gradle-preset-config" class="headerlink" title="gradle preset config."></a>gradle preset config.</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The 'js' parameter can be any name</span></span><br><span class="line">fromPreset(presets.js, <span class="string">'js'</span>, &#123;</span><br><span class="line">    configure(compilations.main) &#123;</span><br><span class="line">        tasks.getByName(compileKotlinTaskName).kotlinOptions &#123;</span><br><span class="line">            <span class="comment">// You can config them to false on production env</span></span><br><span class="line">            metaInfo = <span class="literal">true</span></span><br><span class="line">            sourceMap = <span class="literal">true</span></span><br><span class="line">            sourceMapEmbedSources = <span class="string">"always"</span></span><br><span class="line"></span><br><span class="line">            moduleKind = <span class="string">'commonjs'</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// The program will be bundled to a single js file.</span></span><br><span class="line">            outputFile = <span class="string">"node/kotlin/main/index.js"</span></span><br><span class="line">            <span class="comment">// Whether we should call kotlin main func directly in js.</span></span><br><span class="line">            main = <span class="string">"call"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    configure(compilations.test) &#123;</span><br><span class="line">        tasks.getByName(compileKotlinTaskName).kotlinOptions &#123;</span><br><span class="line">            metaInfo = <span class="literal">true</span></span><br><span class="line">            sourceMap = <span class="literal">true</span></span><br><span class="line">            moduleKind = <span class="string">'commonjs'</span></span><br><span class="line">            sourceMapEmbedSources = <span class="string">"always"</span></span><br><span class="line">            outputFile = <span class="string">"node/kotlin/test/index.js"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>run <code>gradle build</code>, and we can get the produced file at node/kotlin/main/index.js</p>
+<h3 id="gradle-task-config"><a href="#gradle-task-config" class="headerlink" title="gradle task config"></a>gradle task config</h3><p>Get produced index.js is not enough. When we run node index.js, we find that we are lacking a lot of kotlin.js dependencies, like below:</p>
+<blockquote>
+<p>Error loading module ‘kotlin’</p>
+</blockquote>
+<p>So what should we do? As we all know, we should have all the .js files as dependencies. Should we install them like <code>npm install kotlin</code>?<br><strong><em>We should never do it</em></strong></p>
+<p>Kotlin community is not aware of that they should publish their .js package to npm registry. So It’s terrible: when you want to publish your kotlin.js program to npm, you can’t, because the packages you depend on is NOT in npm registry.</p>
+<p>So how do we solve this?<br>There you go.</p>
+<blockquote>
+<p>When there is a will, there is a way.</p>
+<blockquote>
+<p>When you put you .js file into node_modules, you can require it magically.<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch node_modules/hellokotlin.js</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>Write js code below, and you can find it working:<br> <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'hellokotlin'</span>)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+</blockquote>
+<p>This is not officially supported, but it really works.</p>
+<blockquote>
+<p>You might think that you can install the js file through npm install, well you can’t. See<a href="https://docs.npmjs.com/cli/install" target="_blank" rel="noopener">doc</a>. Well, talk about it in the next section.</p>
+</blockquote>
+<p>So, given the hack way above, we can write a gradle task to move all the js dependencies to node_modules like below:<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">task node(<span class="string">dependsOn:</span> [jsJar, jsTestClasses]) &#123;</span><br><span class="line">    doLast &#123;</span><br><span class="line">        copy &#123;</span><br><span class="line">            <span class="keyword">def</span> jsCompilations = kotlin.targets.js.compilations</span><br><span class="line">            from jsCompilations.main.output</span><br><span class="line">            from kotlin.sourceSets.jsMain.resources.srcDirs</span><br><span class="line">            dump(kotlin.sourceSets.jsMain)</span><br><span class="line">            dump(jsCompilations.main)</span><br><span class="line">            jsCompilations.main.runtimeDependencyFiles.each &#123;</span><br><span class="line">                <span class="keyword">if</span> (it.exists() &amp;&amp; !it.isDirectory()) &#123;</span><br><span class="line">                    from zipTree(it.absolutePath).matching &#123; include <span class="string">'*.js'</span> &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            into <span class="string">"node/node_modules"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Also, you can output it into another dir like node/kotlin_dependencies, and specify node path to make program find files in other dirs. </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`<span class="built_in">export</span> NODE_PATH=<span class="string">"<span class="variable">$NODE_PATH</span>:`pwd`/kotlin-dependencies"</span>`</span><br></pre></td></tr></table></figure>
+<h2 id="Publish-your-package"><a href="#Publish-your-package" class="headerlink" title="Publish your package!"></a>Publish your package!</h2><p>When you want to publish your kotlin-js program, you can either publish the kotlin library to maven repository or publish the generated kotlin.js file. The previous is just the same as publishing other packages to maven repo, but when publishing to npm registry, we should do something more.</p>
+<p><a href="https://therollingstones.cn/2018/12/18/code/kotlin/Publish/" target="_blank" rel="noopener">Click here</a> To see how to publish a kotlin-js package to npm registry.</p>
+<h2 id="Documents"><a href="#Documents" class="headerlink" title="Documents"></a>Documents</h2><p><a href="https://www.kotlincn.net/docs/reference/multiplatform.html" target="_blank" rel="noopener">Kotlin official documents </a></p>
+<p><a href="https://www.kotlincn.net/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project" target="_blank" rel="noopener">Start Kotlin multiplatform with gradle</a></p>
+<p><a href="https://blog.kotlin-academy.com/kotlin-js-configuration-made-simple-ef0e361fcd4" target="_blank" rel="noopener">How to run Js tests in kotlin</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="http://link.hhtjim.com/163/26609785.mp3">
+            </audio>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kotlin-multiplatform"><span class="toc-number">1.</span> <span class="toc-text">Kotlin multiplatform</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-start"><span class="toc-number">1.1.</span> <span class="toc-text">Quick start</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Detail-Configurations"><span class="toc-number">1.2.</span> <span class="toc-text">Detail Configurations</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gradle-preset-config"><span class="toc-number">1.2.1.</span> <span class="toc-text">gradle preset config.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gradle-task-config"><span class="toc-number">1.2.2.</span> <span class="toc-text">gradle task config</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Publish-your-package"><span class="toc-number">1.3.</span> <span class="toc-text">Publish your package!</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Documents"><span class="toc-number">1.4.</span> <span class="toc-text">Documents</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

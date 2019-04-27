@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="
+你一直说的那个公园已经拆了
+
+
+还记得荡着秋千日子就飞起来
+
+
+慢慢的下午阳光都在脸上撒野
+
+
+你那傻气 我真是想念
+
+"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Kotlin协程Api详解</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">Kotlin协程Api详解</h1>
+        <div class="stuff">
+            <span>一月 27, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>本篇文章解析Kotlin协程的CoroutineScope， CoroutineContext及其继承类， 旨在探讨并理解kotlin的协程使用，以及对各个协程api细节整理。</p>
+<p>关于协程跨平台的实现以及跨平台使用介绍，欢迎去<a href="https://therollingstones.cn/2018/12/16/code/Kotlin/" target="_blank" rel="noopener">我的博客:编译之后–Kotlin 跨平台协程</a>看看，或者去看看官方的视频&amp;ppt，这也是我本篇文章的基础:</p>
+<ul>
+<li>Presentations and videos:<ul>
+<li><a href="https://www.youtube.com/watch?v=_hfBv0a09Jc" target="_blank" rel="noopener">Introduction to Coroutines</a> (Roman Elizarov at KotlinConf 2017, <a href="https://www.slideshare.net/elizarov/introduction-to-coroutines-kotlinconf-2017" target="_blank" rel="noopener">slides</a>)</li>
+<li><a href="https://www.youtube.com/watch?v=YrrUCSi72E8" target="_blank" rel="noopener">Deep dive into Coroutines</a> (Roman Elizarov at KotlinConf 2017, <a href="https://www.slideshare.net/elizarov/deep-dive-into-coroutines-on-jvm-kotlinconf-2017" target="_blank" rel="noopener">slides</a>)</li>
+<li><a href="https://www.youtube.com/watch?v=a3agLJQ6vt8" target="_blank" rel="noopener">Kotlin Coroutines in Practice</a> (Roman Elizarov at KotlinConf 2018, <a href="https://www.slideshare.net/elizarov/kotlin-coroutines-in-practice-kotlinconf-2018" target="_blank" rel="noopener">slides</a>)</li>
+</ul>
+</li>
+</ul>
+<p>这篇文章很久前就已经打好了草稿，但是由于最近忙没有时间写，再加上最近都没有在写Kotlin。今天仔细又读了一些文档、源码，为了整理一下自己的思路，将自己的个人理解写在这里。</p>
+<p>本文的前提是读者了解协程基本使用，见<a href="https://www.kotlincn.net/docs/reference/coroutines/basics.html" target="_blank" rel="noopener">官方中文文档</a></p>
+<p><code>注：Kotlin版本迭代日新月异，本篇文章难免过时或有疏漏，请读者注意。</code></p>
+<h2 id="CoroutineScope"><a href="#CoroutineScope" class="headerlink" title="CoroutineScope"></a>CoroutineScope</h2><p>什么是CoroutineScope?<br>  CoroutineScope可以理解为协程的<code>作用域</code>，可以管理其域内的所有协程。一个CoroutineScope可以有许多的子scope。</p>
+<p>  创建子scope的方式有许多种，常见的有：</p>
+<ul>
+<li>使用lauch, async 等builder创建一个新的子协程。协程(AbstractCoroutine)继承了 CoroutineScope，从父scope中继承了协程上下文(见下文CoroutineContext) 以及Job（见下文）</li>
+<li><p>使用coroutineScope Api创建新scope:<br><code>public suspend fun &lt;R&gt; coroutineScope(block: suspend CoroutineScope.() -&gt; R): R</code><br>这个api主要用于方便地创建一个子域，并且管理域中的所有子协程。注意这个方法只有在所有 block中创建的子协程全部执行完毕后，才会退出。如下示例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// print输出的结果顺序将会是 1， 2， 3， 4</span></span><br><span class="line">coroutineScope &#123;</span><br><span class="line">    delay(<span class="number">1000</span>)</span><br><span class="line">    println(<span class="string">"1"</span>)</span><br><span class="line">    launch &#123; </span><br><span class="line">        delay(<span class="number">6000</span>) </span><br><span class="line">        println(<span class="string">"3"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    println(<span class="string">"2"</span>)</span><br><span class="line">    <span class="keyword">return</span><span class="symbol">@coroutineScope</span></span><br><span class="line">&#125;</span><br><span class="line">println(<span class="string">"4"</span>)</span><br></pre></td></tr></table></figure>
+<p>与之类似的还有supervisorScope,区别是supervisorScope 在子协程失败时不影响其他子协程，而coroutineScope是将异常抛出。</p>
+</li>
+<li>继承CoroutineScope.这也是比较推荐的做法，用于处理具有生命周期的对象。<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomethingWithLifecycle</span> : <span class="type">CoroutineScope &#123;</span></span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建一个Job,并用这个job来管理你的SomethingWithLifecycle的所有子协程</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> job = Job()</span><br><span class="line">        <span class="keyword">override</span> <span class="keyword">val</span> coroutineContext: CoroutineContext</span><br><span class="line">             <span class="keyword">get</span>() = Dispatchers.Main + job</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 当生命周期销毁时，结束所有子协程</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">close</span><span class="params">()</span></span> &#123; job.cancel() &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="CoroutineContext"><a href="#CoroutineContext" class="headerlink" title="CoroutineContext"></a>CoroutineContext</h2><p>这里我将CoroutineContext翻译为协程上下文。 我也找不到更好的词去翻译它。协程上下文包含当前协程scope的信息， 比如的Job, ContinuationInterceptor, CoroutineName 和CoroutineId。在CoroutineContext中，是用map来存这些信息的， map的键是这些类的伴生对象，值是这些类的一个实例。 这个设计也是蛮骚的， 导致你可以这样子取得context的信息:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> job = context[Job]</span><br><span class="line"><span class="keyword">val</span> continuationInterceptor = context[ContinuationInterceptor]</span><br></pre></td></tr></table></figure></p>
+<p> 每一个信息(Element)的继承关系大概是这样的， 我拿Job来举例：</p>
+<blockquote>
+<p>Job.Key继承了CoroutineContext.Key, Job 继承了CoroutineContext.Element，而CoroutineContext.Element继承了 CoroutineContext。</p>
+</blockquote>
+<p>name 和 id都无关紧要，我们仔细讲讲Job和ContinuationInterceptor。</p>
+<h3 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h3><p>如上文提到的，Job继承了CoroutineContext.Element， 他是协程上下文的一部分。 Job有两个重要的子类实现:JobSupport，提供Job 的父子关系管理， 和AbstractCoroutine，即协程。</p>
+<p>Job对象持有所有的子job实例，可以取消所有子job的运行。Job的join方法会等待自己以及所有子job的执行， 所以Job给予了CoroutineScope一个管理自己所有子协程的能力。</p>
+<h4 id="JobSupport"><a href="#JobSupport" class="headerlink" title="JobSupport"></a>JobSupport</h4><p>JobSupport这边的api已经被标记为废弃了，将来可能会有变动。其实这边api设计我感觉有点看不懂，十分地confusing。以后看看有没有变化吧，这部分主要是提供一个 工厂方法 <code>Job()</code>，可以为你的组件提供一个初始的context， 一个JobImpl的实例。JobSupport同时是AbstractCoroutine的父类。</p>
+<h4 id="AbstractCoroutine"><a href="#AbstractCoroutine" class="headerlink" title="AbstractCoroutine"></a>AbstractCoroutine</h4><p>讲讲Job最重要的子类: AbstractCoroutine。这个类就可以直接理解为是一个协程对象了，他继承了CoroutineScope， Job， Continuation， JobSupport。</p>
+<p>常见地， 使用launch 或者async方法都会实例化出一个AbstractCoroutine 的协程对象，而这个协程对象因为继承了CoroutineScope，所以拥有一个协程上下文。 一个协程的协程上下文的Job值就是他本身，即：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> j = launch &#123; delay(<span class="number">6000</span>) &#125;</span><br><span class="line"><span class="comment">// True!</span></span><br><span class="line">println(j[Job] == j)</span><br></pre></td></tr></table></figure></p>
+<p>而关于Continuation，是kotlin内部用来跳转恢复协程用的。这个东西对外部暴露的东西不多，我们需要了解的有:</p>
+<ul>
+<li>suspendCoroutine, 挂起当前协程，利用Continuation继续协程的执行，常用于与其他平台阻塞方法兼容，这是1.1的api，不多做介绍</li>
+<li>SequenceBuilderIterator，这个就是kotlin协程的生成器了，详见<a href="https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md#generators" target="_blank" rel="noopener">官方文档</a></li>
+</ul>
+<h3 id="ContinuationInterceptor"><a href="#ContinuationInterceptor" class="headerlink" title="ContinuationInterceptor"></a>ContinuationInterceptor</h3><p>这个接口主要是由各种dispather实现。 见<a href="https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html" target="_blank" rel="noopener">官方文档</a><br>肚子好饿，不详细介绍了，后面特别补上一篇文章细说dispatcher在各个平台的表现吧， 敬请期待。</p>
+<h2 id="The-end"><a href="#The-end" class="headerlink" title="The end"></a>The end</h2><p>最后推荐个神仙仓库吧， <a href="https://github.com/Kotlin/KEEP" target="_blank" rel="noopener">kotlin的各种提案</a>,<br>在这里面可以看到各种kotlin特性设计的方案。比如协程的:</p>
+<blockquote>
+<p><a href="https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md#generators" target="_blank" rel="noopener">https://github.com/Kotlin/KEEP/blob/master/proposals/coroutines.md#generators</a></p>
+</blockquote>
+<p><code>如果觉得本篇文章对您有所帮助， 点个赞吧~~蟹蟹~</code></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CoroutineScope"><span class="toc-number">1.</span> <span class="toc-text">CoroutineScope</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CoroutineContext"><span class="toc-number">2.</span> <span class="toc-text">CoroutineContext</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Job"><span class="toc-number">2.1.</span> <span class="toc-text">Job</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JobSupport"><span class="toc-number">2.1.1.</span> <span class="toc-text">JobSupport</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AbstractCoroutine"><span class="toc-number">2.1.2.</span> <span class="toc-text">AbstractCoroutine</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ContinuationInterceptor"><span class="toc-number">2.2.</span> <span class="toc-text">ContinuationInterceptor</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-end"><span class="toc-number">3.</span> <span class="toc-text">The end</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

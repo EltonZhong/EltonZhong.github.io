@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="
+你一直说的那个公园已经拆了
+
+
+还记得荡着秋千日子就飞起来
+
+
+慢慢的下午阳光都在脸上撒野
+
+
+你那傻气 我真是想念
+
+"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">绕开阿里云域名备案: 升级到https小结</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">绕开阿里云域名备案: 升级到https小结</h1>
+        <div class="stuff">
+            <span>二月 12, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="起因："><a href="#起因：" class="headerlink" title="起因："></a>起因：</h2><p>博客之前一直serve在github.io上面，由于github访问速度实在是慢，所以打算迁移到自己买的阿里云服务器上。</p>
+<p>但是，当我把自己的域名解析到阿里云服务器上时， wtf，返回的页面居然是一个阿里云的页面，要求我对服务器进行备案。</p>
+<p>备案？emmm…可以接受。我点进去， 结果发现下面这些东西。。。。<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e1bb89aa868a9?w=1240&amp;h=670&amp;f=png&amp;s=250303" alt="image.png"></p>
+<p><code>20个工作日！还能不能让人好好玩耍了！</code></p>
+<p>所以如何绕开烦人的备案？<br>我发现当我只是通过ip访问时， 一切正常； 当我使用域名访问时，则返回阿里云的备案页面。而我的域名又是在腾讯云买的， 所以可以断定：<code>这是一起http劫持事件</code>。</p>
+<p>阿里云劫持了我的http请求，判断是通过域名访问， 则篡改我的http响应。如何解决呢？https可以完美解决这种问题。</p>
+<blockquote>
+<p>这里大家好像都奇怪为什么https可以绕过备案，我补充一下：https会对数据进行加密，可以避免中间商对数据进行修改。经常发现登陆某些网站被植入联通的广告，实际就是运营商修改了响应。如果换成https，运营商将无法篡改你的响应。</p>
+</blockquote>
+<h2 id="Let’s-Encrypt"><a href="#Let’s-Encrypt" class="headerlink" title="Let’s Encrypt"></a>Let’s Encrypt</h2><p>黑喂狗，下一步就是要让服务可以通过https来访问。</p>
+<p>那么问题来了，https要求有一张受浏览器信任的证书。这时， <a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let’s Encrypt</a> 作为一个免费、受信任广的证书签发机构，自然成为了我的首选。</p>
+<p>但是，就在这时，我踩了两个坑。</p>
+<h3 id="腾讯云域名解析"><a href="#腾讯云域名解析" class="headerlink" title="腾讯云域名解析"></a>腾讯云域名解析</h3><p><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e1bb89abe170f?w=982&amp;h=882&amp;f=png&amp;s=106810" alt="image.png"></p>
+<p>let’s encrypt是一家境外的CA， 所以在选择线路类型时需要选择默认。我当时选择了境内而不自知，费了一番功夫才发现原来境外解析不了这个域名。</p>
+<h3 id="阿里云的篡改http响应"><a href="#阿里云的篡改http响应" class="headerlink" title="阿里云的篡改http响应"></a>阿里云的篡改http响应</h3><p>let’s encrypt 给你签发证书的条件是证明这个域名是你的。<br>有两种方式， 一种是webroot， 即你在你的域名解析到的服务器的80端口上serve一个let’s encrypt 指定的页面。即我访问<a href="http://www.example.com/letsencrypt，返回的需要是let&#39;s" target="_blank" rel="noopener">http://www.example.com/letsencrypt，返回的需要是let&#39;s</a> encrypt指定的文本。<br>我一开始就是用的这种方式，使用了let’s encrypt 的certbot的webroot模式去验证。结果发现<code>TM返回的response被阿里云劫持了</code>。发现这里绕了个圈，又回来了。</p>
+<p>还好let’s encrypt提供了另一种方式：域名解析指定的txt。这就好办多了， 类似下面这样配置域名解析就可以了：<img src="https://user-gold-cdn.xitu.io/2019/2/12/168e1bb89ad6f943?w=1240&amp;h=118&amp;f=png&amp;s=6110" alt="image.png"></p>
+<p>然后你可以获得let’s encrypt给你签发的证书， 在<code>/etc/letsencrypt/live/</code>域名/路径下。</p>
+<h2 id="上nginx配置"><a href="#上nginx配置" class="headerlink" title="上nginx配置"></a>上nginx配置</h2><p>最后用nginx 为你的服务serve一下即可。上nginx配置：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">443</span> ssl http2 default_server;</span><br><span class="line">        <span class="attribute">listen</span>       [::]:<span class="number">443</span> ssl http2 default_server;</span><br><span class="line">        <span class="attribute">server_name</span>  _;</span><br><span class="line">        <span class="attribute">root</span>         /root/workspace/eltonzhong.github.io;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_certificate</span> <span class="string">"/etc/letsencrypt/live/therollingstones.cn/cert.pem"</span>;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> <span class="string">"/etc/letsencrypt/live/therollingstones.cn/privkey.pem"</span>;</span><br><span class="line">        <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">1m</span>;</span><br><span class="line">        <span class="attribute">ssl_session_timeout</span>  <span class="number">10m</span>;</span><br><span class="line">        <span class="attribute">ssl_ciphers</span> HIGH:!aNULL:!MD5;</span><br><span class="line">        <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="The-end"><a href="#The-end" class="headerlink" title="The end"></a>The end</h2><p>总体还是蛮简单的，只要不像我一样愚蠢地踩到腾讯云域名解析路线的坑即可。<br>谢谢阅读，如果觉得有帮助，可以点个赞吗~谢谢！<br>本篇文章在掘金上也拥有一定的访问量，<a href="https://juejin.im/post/5c62bf5f51882562c5505fa4" target="_blank" rel="noopener">详情请见掘金</a> 。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因："><span class="toc-number">1.</span> <span class="toc-text">起因：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Let’s-Encrypt"><span class="toc-number">2.</span> <span class="toc-text">Let’s Encrypt</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#腾讯云域名解析"><span class="toc-number">2.1.</span> <span class="toc-text">腾讯云域名解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#阿里云的篡改http响应"><span class="toc-number">2.2.</span> <span class="toc-text">阿里云的篡改http响应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#上nginx配置"><span class="toc-number">3.</span> <span class="toc-text">上nginx配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-end"><span class="toc-number">4.</span> <span class="toc-text">The end</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
