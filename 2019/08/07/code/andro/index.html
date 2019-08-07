@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="Android 测试Android测试随着时间变化，很多工具被废弃，也有许多新的工具发展。
+不同时期的android测试工具、框架
+
+简单地介绍以下其中几种比较重要或者常用的android 测试工具,"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Android Instrumentation Test</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">Android Instrumentation Test</h1>
+        <div class="stuff">
+            <span>八月 07, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Code/">Code</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Android-测试"><a href="#Android-测试" class="headerlink" title="Android 测试"></a>Android 测试</h1><p>Android测试随着时间变化，很多工具被废弃，也有许多新的工具发展。</p>
+<p>不同时期的android测试工具、框架<img src="https://upload-images.jianshu.io/upload_images/14858485-6a16ad5c1bc928b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="AndroidTest.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/14858485-1d8308f8d27d5283.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="AndroidTest2.png"></p>
+<p>简单地介绍以下其中几种比较重要或者常用的android 测试工具:</p>
+<ul>
+<li><a href="https://site.mockito.org/" target="_blank" rel="noopener">Mockito</a>: Mock android 平台相关依赖, 单元测试.</li>
+<li><a href="http://robolectric.org/" target="_blank" rel="noopener">Robolectric</a>: Run android tests inside the JVM on your workstation. Android 程序是跑在 Dalvik 虚拟机上的， 直接实现了android.jar的api， 参考<a href="https://www.jianshu.com/p/f17fa7e2253c" target="_blank" rel="noopener">这里</a></li>
+<li><p><a href="https://developer.android.com/studio/test/monkeyrunner" target="_blank" rel="noopener">MonkeyRunner</a>: Like appium, use hidden api. <a href="https://yq.aliyun.com/articles/63501" target="_blank" rel="noopener">Chinese doc</a></p>
+</li>
+<li><p>[UiAutomator1]: 给UI做黑盒测试， 进程和和app进程独立, 写测试用例打包成jar， push到android设备内使用<code>uiautomator runtest 你的jar.jar</code>跑</p>
+</li>
+<li><p><a href="https://developer.android.com/training/testing/" target="_blank" rel="noopener">ATSL</a>: Android Test Support Library</p>
+<ul>
+<li><a href="https://developer.android.com/training/testing/espresso" target="_blank" rel="noopener">Espresso</a></li>
+<li><a href="https://developer.android.com/training/testing/ui-automator" target="_blank" rel="noopener">UiAutomator2</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Instrumentation-test"><a href="#Instrumentation-test" class="headerlink" title="Instrumentation test"></a>Instrumentation test</h2><p>Instrumentation test现在是android测试的标准。<br>UIAutomator1也迁移到Instrumentation based这个框架下。</p>
+<p>那什么是 Instrumentation test呢？</p>
+<p><a href="https://developer.android.com/reference/android/app/Instrumentation.html" target="_blank" rel="noopener">文档自然是最吼的</a>， 但是如果不愿意看文档， 可以继续往下看本篇文章</p>
+<h3 id="What’s-instrumentation"><a href="#What’s-instrumentation" class="headerlink" title="What’s instrumentation"></a>What’s instrumentation</h3><ul>
+<li><a href="https://developer.android.com/reference/android/app/Instrumentation.html" target="_blank" rel="noopener">Official doc</a></li>
+<li><a href="https://yoyoyoky.github.io/2017/01/14/Instrumentation%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/" target="_blank" rel="noopener">Chinese doc</a></li>
+<li><a href="https://testerhome.com/topics/6592" target="_blank" rel="noopener">Chinese doc</a></li>
+</ul>
+<p>App 创建时都会实例化一个Instrumentation对象, 在Activity之间共享实例， 控制Activity的生命周期, 使得Activity与控件的生命周期不需要被系统控制, 并且可以随意控制activity的创建与销毁。</p>
+<p>如下面的代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Start the main activity of the application under test</span></span><br><span class="line">mActivity = getActivity();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Get a handle to the Activity object's main UI widget, a Spinner</span></span><br><span class="line">mSpinner = (Spinner)mActivity.findViewById(com.android.example.spinner.R.id.Spinner01);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set the Spinner to a known position</span></span><br><span class="line">mActivity.setSpinnerPosition(TEST_STATE_DESTROY_POSITION);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Stop the activity - The onDestroy() method should save the state of the Spinner</span></span><br><span class="line">mActivity.finish();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Re-start the Activity - the onResume() method should restore the state of the Spinner</span></span><br><span class="line">mActivity = getActivity();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Get the Spinner's current position</span></span><br><span class="line"><span class="keyword">int</span> currentPosition = mActivity.getSpinnerPosition();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assert that the current position is the same as the starting position</span></span><br><span class="line">assertEquals(TEST_STATE_DESTROY_POSITION, currentPosition);</span><br></pre></td></tr></table></figure>
+<p>几句话概括以下：</p>
+<blockquote>
+<p>Android instrumentation is a set of control methods or hooks in the Android system.</p>
+</blockquote>
+<blockquote>
+<p>These hooks control an Android component independently of its normal lifecycle.</p>
+</blockquote>
+<blockquote>
+<p>They also control how Android loads applications.</p>
+</blockquote>
+<p>如何指定instrumentation?</p>
+<p>在一个测试apk的 manifest中， 声明 targetPackage 和 name， 然后打包编译后使用<br><code>adb shell am instrument ...</code>命令启动测试apk， 然后android系统会做两件事:</p>
+<ol>
+<li>将 targetPackage app进程重启</li>
+<li>然后实例化 name声明的 instrumentation类， 创建instrumentation线程</li>
+</ol>
+<p>然后测试代码跑在instrumentation线程中， 并且可以控制、操作app进程、app上下文来实现自动化测试， 这就是 Android instrumentation test.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">package</span>=<span class="string">"com.example.android.testing.uiautomator.BasicSample.test"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:versionCode</span>=<span class="string">"1"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:versionName</span>=<span class="string">"1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-sdk</span> <span class="attr">android:minSdkVersion</span>=<span class="string">"18"</span> <span class="attr">android:targetSdkVersion</span>=<span class="string">"28"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">instrumentation</span> <span class="attr">android:targetPackage</span>=<span class="string">"com.example.android.testing.uiautomator.BasicSample"</span></span></span><br><span class="line"><span class="tag">                     <span class="attr">android:name</span>=<span class="string">"androidx.test.runner.AndroidJUnitRunner"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span> <span class="attr">tools:replace</span>=<span class="string">"label"</span> <span class="attr">android:label</span>=<span class="string">"BasicSampleTest"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Espresso-VS-UiAutomator-v2-VS-UiAuotomator-v1"><a href="#Espresso-VS-UiAutomator-v2-VS-UiAuotomator-v1" class="headerlink" title="Espresso VS UiAutomator v2 VS UiAuotomator v1"></a>Espresso VS UiAutomator v2 VS UiAuotomator v1</h3><p>Refrences:</p>
+<ol>
+<li><p><a href="https://stackoverflow.com/questions/31076228/android-testing-uiautomator-vs-espresso" target="_blank" rel="noopener">Uiautomator1 vs espresso</a> (Remeber the answers are talking about uiautomator v1, in 2016)</p>
+</li>
+<li><p><a href="https://kkboxsqa.wordpress.com/2017/09/18/appium-and-uiautomator2-part1/" target="_blank" rel="noopener">Uiautomator2 vs 1</a></p>
+</li>
+<li><p><a href="https://developer.android.com/training/testing/espresso" target="_blank" rel="noopener">Espresso</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Each time your <span class="built_in">test</span> invokes onView(), Espresso waits to perform the corresponding UI action or assertion until the following synchronization conditions are met:</span><br><span class="line"></span><br><span class="line">The message queue is empty.</span><br><span class="line">There are no instances of AsyncTask currently executing a task.</span><br><span class="line">All developer-defined idling resources are idle.</span><br><span class="line">By performing these checks, Espresso substantially increases the likelihood that only one UI action or assertion can occur at any given time. This capability gives you more reliable and dependable <span class="built_in">test</span> results.</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://juejin.im/entry/589d39f361ff4b006b384055" target="_blank" rel="noopener">Chinese doc</a></li>
+</ul>
+</li>
+</ol>
+<hr>
+<p>Below are some snippets:</p>
+<ol>
+<li>A key benefit of using Espresso is that it provides automatic synchronization of test actions with the UI of the app you are testing. Espresso detects when the main thread is idle, so it is able to run your test commands at the appropriate time, improving the reliability of your tests. This capability also relieves you from having to add any timing workarounds, such as Thread.sleep() in your test code.<br>The Espresso testing framework is an instrumentation-based API and works with the AndroidJUnitRunner test runner.</li>
+<li>UiAutomator is powerful and has good external OS system integration e.g. can turn WiFi on and off and access other settings during test.</li>
+<li>Based on uiAutomator</li>
+<li>Espresso is targeted at developers, who believe that automated testing is an integral part of the development lifecycle. While it can be used for black-box testing, Espresso’s full power is unlocked by those who are familiar with the codebase under test.</li>
+</ol>
+<p>UiAutomator1.0 use <code>uiautomator runtest yourtest.jar</code> cmd.</p>
+<p>While uiautomator use <code>adb shell am instrument -w -r -e debug false -e class ...</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># special case pre-processing for 'runtest' command</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$&#123;cmd&#125;</span>"</span> == <span class="string">"runtest"</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="comment"># Print deprecation warning</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Warning: This version of UI Automator is deprecated. New tests should be written using"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"UI Automator 2.0 which is available as part of the Android Testing Support Library."</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"See https://developer.android.com/training/testing/ui-testing/uiautomator-testing.html"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"for more details."</span></span><br></pre></td></tr></table></figure>
+<h2 id="Appium-vs-ATSL-Android-native-test"><a href="#Appium-vs-ATSL-Android-native-test" class="headerlink" title="Appium vs ATSL(Android native test)"></a>Appium vs ATSL(Android native test)</h2><p>Appium is based on ATSL now. UiAutomator2 is widely used now. The support for espresso is released, but due to espresso is more suitable for white box test, so it’s not</p>
+<ol>
+<li><p>Speed:</p>
+<ul>
+<li>Espresso is suitable to cover simple cases, unit tests. It’s much faster than uiautomator, and appium. (About 7 times faster than robotium).</li>
+<li>UiAutomator is faster and than appium, cause http requests take time.</li>
+</ul>
+</li>
+<li><p>Ability:</p>
+<ul>
+<li>Appium has access to the server connecting android devices, so you can call cmds like <code>adb install</code> when running cases. While you can not install or uninstall apps when using uiautomator directly. With <code>andro</code>‘s helper, you can install/uninstall apps at the <code>beggining</code> of a case, or at the <code>end</code> of a case. While all <code>adb shell</code> commands are available in native test.</li>
+<li>Appium is not suitable to write grey-box test, also you can access android methods through reflection, but without code base of android, it’s hard. While with native-test, you’re free to get the context of app, activities, and call special lifecycle methods in activities.</li>
+<li>With appium, you can use almost all language to write your tests. While with the native test, you can only write with kotlin/java</li>
+</ul>
+</li>
+<li><p>Stability:</p>
+<ul>
+<li>Appium use uiautomator-server apk and uiautomator-server-test apk. It should start a tcp port on the device, and recieve commands to controll the device. Compared to android test which is maintained by google team, appium is not as stable as native test, but acceptable.</li>
+<li>Cases wrote in espresso don’t need to poll the state of ui, so they are more stable. While comparing cases wrote in appium with cases wrote in uiautomator, they are almost the same except for that appium use network connection, which is not reliable.</li>
+</ul>
+</li>
+</ol>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-测试"><span class="toc-number">1.</span> <span class="toc-text">Android 测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Instrumentation-test"><span class="toc-number">1.1.</span> <span class="toc-text">Instrumentation test</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#What’s-instrumentation"><span class="toc-number">1.1.1.</span> <span class="toc-text">What’s instrumentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Espresso-VS-UiAutomator-v2-VS-UiAuotomator-v1"><span class="toc-number">1.1.2.</span> <span class="toc-text">Espresso VS UiAutomator v2 VS UiAuotomator v1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Appium-vs-ATSL-Android-native-test"><span class="toc-number">1.2.</span> <span class="toc-text">Appium vs ATSL(Android native test)</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
