@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elton</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Elton,"> 
+    <meta name="description" content="Spring scope: Case scope.A scope defines how spring register and retrive it’s dependencies.Through ,"> 
+    <meta name="author" content="Elton"> 
+    <link rel="alternative" href="atom.xml" title="Elton" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+</html>
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">如何引入 Spring 的 scope 到 Cucumber 项目中?</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">如何引入 Spring 的 scope 到 Cucumber 项目中?</h1>
+        <div class="stuff">
+            <span>十二月 17, 2019</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Spring-scope-Case-scope"><a href="#Spring-scope-Case-scope" class="headerlink" title="Spring scope: Case scope."></a>Spring scope: Case scope.</h1><p>A scope defines how spring register and retrive it’s dependencies.<br>Through scope, you can customize the beans’ lifecycle.</p>
+<p>With links below, you will be familar with scope and spring di mechanism.</p>
+<blockquote>
+<p><a href="https://www.baeldung.com/spring-custom-scope" target="_blank" rel="noopener">https://www.baeldung.com/spring-custom-scope</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/50477894/spring-custom-scope-lifecycle-bean-termination" target="_blank" rel="noopener">https://stackoverflow.com/questions/50477894/spring-custom-scope-lifecycle-bean-termination</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://howtodoinjava.com/spring-core/spring-bean-life-cycle/" target="_blank" rel="noopener">https://howtodoinjava.com/spring-core/spring-bean-life-cycle/</a></p>
+</blockquote>
+<blockquote>
+<p><a href="http://iryndin.net/post/spring_beanpostprocessors/" target="_blank" rel="noopener">http://iryndin.net/post/spring_beanpostprocessors/</a></p>
+</blockquote>
+<h2 id="Spring-scope-introduction"><a href="#Spring-scope-introduction" class="headerlink" title="Spring scope introduction."></a>Spring scope introduction.</h2><h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Scope</span>(<span class="string">"singleton"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ABean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Or in config:</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.**.**...."</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Scope</span>(<span class="string">"prototype"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getABean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ABean();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Available and common scopes are here:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Scope identifier for the standard singleton scope: "singleton".</span></span><br><span class="line"><span class="comment"> * Custom scopes can be added via &#123;<span class="doctag">@code</span> registerScope&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #registerScope</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String SCOPE_SINGLETON = <span class="string">"singleton"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Scope identifier for the standard prototype scope: "prototype".</span></span><br><span class="line"><span class="comment"> * Custom scopes can be added via &#123;<span class="doctag">@code</span> registerScope&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #registerScope</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String SCOPE_PROTOTYPE = <span class="string">"prototype"</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Scope identifier for request scope: "request".</span></span><br><span class="line"><span class="comment"> * Supported in addition to the standard scopes "singleton" and "prototype".</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String SCOPE_REQUEST = <span class="string">"request"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Scope identifier for session scope: "session".</span></span><br><span class="line"><span class="comment"> * Supported in addition to the standard scopes "singleton" and "prototype".</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String SCOPE_SESSION = <span class="string">"session"</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="How-they-work"><a href="#How-they-work" class="headerlink" title="How they work"></a>How they work</h3><p>See <code>org.springframework.beans.factory.config.Scope</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Scope</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Return the object with the given name from the underlying scope,</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> org.springframework.beans.factory.ObjectFactory#getObject() creating it&#125;</span></span><br><span class="line"><span class="comment">	 * if not found in the underlying storage mechanism.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;This is the central operation of a Scope, and the only operation</span></span><br><span class="line"><span class="comment">	 * that is absolutely required.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> name the name of the object to retrieve</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> objectFactory the &#123;<span class="doctag">@link</span> ObjectFactory&#125; to use to create the scoped</span></span><br><span class="line"><span class="comment">	 * object if it is not present in the underlying storage mechanism</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the desired object (never &#123;<span class="doctag">@code</span> null&#125;)</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> IllegalStateException if the underlying scope is not currently active</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">Object <span class="title">get</span><span class="params">(String name, ObjectFactory&lt;?&gt; objectFactory)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Register a callback to be executed on destruction of the specified</span></span><br><span class="line"><span class="comment">	 * object in the scope (or at destruction of the entire scope, if the</span></span><br><span class="line"><span class="comment">	 * scope does not destroy individual objects but rather only terminates</span></span><br><span class="line"><span class="comment">	 * in its entirety).</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;&lt;b&gt;Note: This is an optional operation.&lt;/b&gt; This method will only</span></span><br><span class="line"><span class="comment">	 * be called for scoped beans with actual destruction configuration</span></span><br><span class="line"><span class="comment">	 * (DisposableBean, destroy-method, DestructionAwareBeanPostProcessor).</span></span><br><span class="line"><span class="comment">	 * Implementations should do their best to execute a given callback</span></span><br><span class="line"><span class="comment">	 * at the appropriate time. If such a callback is not supported by the</span></span><br><span class="line"><span class="comment">	 * underlying runtime environment at all, the callback &lt;i&gt;must be</span></span><br><span class="line"><span class="comment">	 * ignored and a corresponding warning should be logged&lt;/i&gt;.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Note that 'destruction' refers to automatic destruction of</span></span><br><span class="line"><span class="comment">	 * the object as part of the scope's own lifecycle, not to the individual</span></span><br><span class="line"><span class="comment">	 * scoped object having been explicitly removed by the application.</span></span><br><span class="line"><span class="comment">	 * If a scoped object gets removed via this facade's &#123;<span class="doctag">@link</span> #remove(String)&#125;</span></span><br><span class="line"><span class="comment">	 * method, any registered destruction callback should be removed as well,</span></span><br><span class="line"><span class="comment">	 * assuming that the removed object will be reused or manually destroyed.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> name the name of the object to execute the destruction callback for</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> callback the destruction callback to be executed.</span></span><br><span class="line"><span class="comment">	 * Note that the passed-in Runnable will never throw an exception,</span></span><br><span class="line"><span class="comment">	 * so it can safely be executed without an enclosing try-catch block.</span></span><br><span class="line"><span class="comment">	 * Furthermore, the Runnable will usually be serializable, provided</span></span><br><span class="line"><span class="comment">	 * that its target object is serializable as well.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> IllegalStateException if the underlying scope is not currently active</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.factory.DisposableBean</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.factory.support.AbstractBeanDefinition#getDestroyMethodName()</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> DestructionAwareBeanPostProcessor</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">registerDestructionCallback</span><span class="params">(String name, Runnable callback)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So, in a simple way, we can define a <code>scopeHolder</code>, which store the instances, and remove the instances when scope destroyed.</p>
+<h2 id="Customize-Injection"><a href="#Customize-Injection" class="headerlink" title="Customize Injection"></a>Customize Injection</h2><p>With custom inject policy, we can reduce a lot of effort for wiring <code>android &amp; ios page</code>.<br><a href="http://iryndin.net/post/spring_beanpostprocessors/" target="_blank" rel="noopener">http://iryndin.net/post/spring_beanpostprocessors/</a></p>
+<p>So we can wirte steps like this:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExampleSteps</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Automatically wire AndroidBaseSomePage or IosBaseSomePage to page.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@InjectPage</span></span><br><span class="line">    <span class="keyword">private</span> IBaseSomePage page;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@When</span>(<span class="string">""</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">example</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        page.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>But still we need to handle mobileDevice properly, because when <code>ExampleSteps</code> inits, the page, which depends on mobileDevice will be wired.</p>
+<p>So we can separate the appium session and MobileDevice creation:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MobileDevice</span> </span>&#123;</span><br><span class="line">    AppiumDriver driver;</span><br><span class="line"></span><br><span class="line">    getAppiumDriver() &#123;</span><br><span class="line">        <span class="keyword">if</span> (driver == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> IllegalStateException(<span class="string">"You should create appium session first."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> driver;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>or we can lazy init the page.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    ReflectionUtils.doWithFields(bean.getClass(), field -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (field.getAnnotation(InjectPage.class) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            ReflectionUtils.makeAccessible(field);</span><br><span class="line">            hooks.add(() -&gt; field.set(bean, getPage(bean)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Before</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    createAppiumDriver();</span><br><span class="line">    injectPages();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">injectPages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    hooks.forEach(Hook::call)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Hook</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">call</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/4336248.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/163/4338461.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="27798d22668192341ae2" data-cs="ccf0e66c06ffc16845926fa2f54a2976e0666979" data-r="eltonZhong.github.io" data-o="EltonZhong" data-a="EltonZhong" data-d="false">查看评论</div>
+
+
+    </div>
+    
+        <div class="side">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-scope-Case-scope"><span class="toc-number">1.</span> <span class="toc-text">Spring scope: Case scope.</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-scope-introduction"><span class="toc-number">1.1.</span> <span class="toc-text">Spring scope introduction.</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Usage"><span class="toc-number">1.1.1.</span> <span class="toc-text">Usage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-they-work"><span class="toc-number">1.1.2.</span> <span class="toc-text">How they work</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Customize-Injection"><span class="toc-number">1.2.</span> <span class="toc-text">Customize Injection</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false});</script></body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131070617-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
